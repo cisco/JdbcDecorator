@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.io.PrintStream;
+import java.io.File;
+import java.io.IOException;
 
 
 public class DecoratorConnection implements Connection {
@@ -16,6 +19,7 @@ public class DecoratorConnection implements Connection {
     public static final String META_DATA_PROVIDER_CLASS_NAME = PROPERTY_PREFIX + "metadataproviderclassname";
     public static final String PRE_CONNECTOR_CLASS_NAME = PROPERTY_PREFIX + "preconnectorclassname";
     public static final String RESULT_SET_CLASS_NAME = PROPERTY_PREFIX + "resultsetclassname";
+    public static final String LOG_FILE = PROPERTY_PREFIX + "logfile";
 
 
     private String url;
@@ -29,6 +33,7 @@ public class DecoratorConnection implements Connection {
     private boolean autoCommit = true;
     private boolean closed = false;
     private int transactionIsolation = TRANSACTION_READ_UNCOMMITTED;
+    public PrintStream logStream;
 
     public DecoratorConnection(String url, Properties props)
         throws SQLException 
@@ -42,6 +47,32 @@ public class DecoratorConnection implements Connection {
             String propName = (String)propObj;
             if (propName.startsWith(PROPERTY_PREFIX)) {
                 decoratorProps.setProperty(propName,props.getProperty(propName));
+            }
+        }
+
+        String logFileName = decoratorProps.getProperty(LOG_FILE);
+        if (logFileName == null) {
+            logStream = null;
+        }
+        else if (logFileName.equals("-")) {
+            logStream = System.out;
+        }
+        else {
+            try {
+                File logFile = new File(logFileName);
+                if (logFile.isDirectory()) {
+                    logFile = File.createTempFile("DecoratorConnection_",".log",logFile);
+                }
+                else {
+                    logFile.createNewFile();
+                }
+                if (!logFile.canWrite()) {
+                    System.err.println("DecoratorConnection: can't write to log file " + logFile.getCanonicalPath());
+                }
+                logStream = new PrintStream(logFile);
+            }
+            catch (IOException ioe) {
+                ioe.printStackTrace(System.err);
             }
         }
 
@@ -63,6 +94,22 @@ public class DecoratorConnection implements Connection {
             throw new SQLException(cnfe);
         }
 
+        if (logStream != null) {
+            logStream.println("DecoratorConnection: new connection");
+            logStream.println("DecoratorConnection: url = " + this.url);
+            logStream.println("DecoratorConnection: properties = ");
+            for (String name : this.props.stringPropertyNames()) {
+                logStream.print("\t");
+                logStream.print(name);
+                logStream.print(" = ");
+                if ("password".equals(name)) {
+                    logStream.println("********");
+                }
+                else {
+                    logStream.println(this.props.getProperty(name));
+                }
+            }
+        }
         String preConnectorClassName = decoratorProps.getProperty(PRE_CONNECTOR_CLASS_NAME);
         if (preConnectorClassName != null) {
             try {
@@ -82,12 +129,30 @@ public class DecoratorConnection implements Connection {
         else {
             preConnector = new PreConnector();
         }
-        preConnector.setProperties(this.props);
-        preConnector.setUrl(this.url);
-        preConnector.process();
-        this.props = preConnector.getProperties();
-        this.url = preConnector.getUrl();
-        
+        if (preConnectorClassName != null) {
+            preConnector.setProperties(this.props);
+            preConnector.setUrl(this.url);
+            preConnector.process();
+            this.props = preConnector.getProperties();
+            this.url = preConnector.getUrl();
+            if (logStream != null) {
+                logStream.println("DecoratorConnection: after preconnector");
+                logStream.println("DecoratorConnection: url = " + this.url);
+                logStream.println("DecoratorConnection: properties = ");
+                for (String name : this.props.stringPropertyNames()) {
+                    logStream.print("\t");
+                    logStream.print(name);
+                    logStream.print(" = ");
+                    if ("password".equals(name)) {
+                        logStream.println("********");
+                    }
+                    else {
+                        logStream.println(this.props.getProperty(name));
+                    }
+                }
+            }
+        }
+            
         this.conn = DriverManager.getConnection(this.url, this.props);
 
         String sqlFilterClassName = decoratorProps.getProperty(SQL_FILTER_CLASS_NAME);
