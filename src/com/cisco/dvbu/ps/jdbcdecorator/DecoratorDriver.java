@@ -9,7 +9,7 @@ public class DecoratorDriver implements Driver {
             DriverManager.registerDriver(new DecoratorDriver());
         }
         catch(SQLException sqle) {
-            System.err.println("Unable to register " + DecoratorDriver.getName());
+            System.err.println("Unable to register " + DecoratorDriver.class.getName());
             System.err.println(sqle);
         }
     };

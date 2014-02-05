@@ -17,7 +17,7 @@ public class TestJdbc {
         ResultSet rs = null;
         DatabaseMetaData dbmd = null;
         try {
-            conn = DriverManager.getConnection("jdbcdecorator:jdbc:mysql://localhost:9408/mysql", props);
+            conn = DriverManager.getConnection("jdbcdecorator:jdbc:mysql://localhost:3306/mysql", props);
             try {
                 dbmd = conn.getMetaData();
                 rs = dbmd.getColumns("","","","");

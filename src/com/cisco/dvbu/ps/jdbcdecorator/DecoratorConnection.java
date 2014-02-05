@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class DecoratorConnection implements Connection {
 
-    public static final String DECORATOR_DRIVER_CLASS_NAME = DecoratorDriver.getName();
+    public static final String DECORATOR_DRIVER_CLASS_NAME = DecoratorDriver.class.getName();
     public static final String JDBC_URL_PREFIX = "jdbcdecorator:";
     public static final String PROPERTY_PREFIX = "jdbcdecorator.";
     public static final String DRIVER_CLASS_NAME = PROPERTY_PREFIX + "driverclassname";
@@ -201,7 +201,7 @@ public class DecoratorConnection implements Connection {
         Class metaDataProviderClass;
         
         if (metaDataProviderClassName == null) {
-            metaDataProviderClassName = "com.compositesw.ps.jdbcdecorator.MetaDataProvider";
+            metaDataProviderClassName = MetaDataProvider.class.getName();
         }
 
         try {
