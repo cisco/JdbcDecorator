@@ -1,4 +1,4 @@
-package com.compositesw.ps.jdbcdecorator;
+package com.cisco.dvbu.ps.jdbcdecorator;
 
 import java.sql.*;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class DecoratorConnection implements Connection {
 
-    public static final String DECORATOR_DRIVER_CLASS_NAME = "com.compositesw.ps.jdbcdecorator.DecoratorDriver";
+    public static final String DECORATOR_DRIVER_CLASS_NAME = DecoratorDriver.getName();
     public static final String JDBC_URL_PREFIX = "jdbcdecorator:";
     public static final String PROPERTY_PREFIX = "jdbcdecorator.";
     public static final String DRIVER_CLASS_NAME = PROPERTY_PREFIX + "driverclassname";

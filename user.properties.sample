@@ -1,0 +1,8 @@
+ant.dir=/Users/thisuser/dev/projects/tools/common/ant/apache-ant-1.6.2
+jdk.dir=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
+jre.dir=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
+
+shell.program=/bin/bash
+
+devtools.dir=/Users/thisuser/dev/projects/tools
+
