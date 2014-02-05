@@ -1,4 +1,4 @@
-import com.compositesw.ps.jdbcdecorator.SqlFilter;
+import com.cisco.dvbu.ps.jdbcdecorator.SqlFilter;
 import java.sql.SQLException;
 
 public class MySqlFilter extends SqlFilter {

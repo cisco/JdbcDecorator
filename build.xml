@@ -1,14 +1,8 @@
 <?xml version="1.0" ?>
 <project name="JdbcDecorator" default="compile">
-
-  <property name="composite.install.location" value="/usr/local/Composite_Software/CIS_5.1.0" />
-  <property name="jar.file.destination" value="${composite.install.location}/conf/customjars" />
   <property name="jar.file.name" value="JdbcDecorator.jar" />
 
   <path id="compile.classpath">
-    <pathelement location="${composite.install.location}/apps/common/lib/cscommon.jar" />
-    <pathelement location="${composite.install.location}/apps/server/lib/csserver.jar" />
-    <pathelement location="${composite.install.location}/apps/server/lib/csqe.jar" />
     <fileset dir="./lib">
       <include name="**/*.jar"/>
     </fileset>
@@ -17,9 +11,6 @@
   <path id="run.classpath">
     <path refid="compile.classpath" />
     <pathelement location="build/classes" />
-    <pathelement location="${composite.install.location}/apps/common/lib/log4j-1_2_13.jar" />
-    <pathelement location="${composite.install.location}/apps/common/lib/commons-logging.jar" />
-    <pathelement location="${composite.install.location}/conf/repository/mysql/mysql-connector-java-commercial-5.0.8-bin.jar" />
   </path>
 
   <target name="clean">
@@ -55,12 +46,4 @@
     </jar>
   </target>
 
-  <target name="deploy" depends="jar">
-    <copy file="dist/${jar.file.name}"
-        todir="${jar.file.destination}"
-        overwrite="true">
-    </copy>
-  </target>
-
 </project>
-

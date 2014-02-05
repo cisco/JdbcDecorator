@@ -5,7 +5,7 @@ public class TestJdbc {
     public static void main(String[] args)
         throws Exception
     {
-        Class.forName("com.compositesw.ps.jdbcdecorator.DecoratorDriver");
+        Class.forName("com.cisco.dvbu.ps.jdbcdecorator.DecoratorDriver");
 
         Properties props = new Properties();
         props.setProperty("jdbcdecorator.driverclassname","com.mysql.jdbc.Driver");
@@ -47,15 +47,13 @@ public class TestJdbc {
                 }
                 finally {
                     if (rs != null) {
-                        //if (!rs.isClosed())
-                            rs.close();
+                        rs.close();
                     }
                 }
             }
             finally {
                 if (stmt != null) {
-                    //if (!stmt.isClosed())
-                        stmt.close();
+                    stmt.close();
                 }
             }
         }
@@ -67,5 +65,4 @@ public class TestJdbc {
         }
 
     };
-
 }
